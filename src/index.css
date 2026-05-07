@@ -1,0 +1,94 @@
+@import "tailwindcss";
+
+@theme {
+  --color-superior: #4F46E5;
+  --color-superior-dark: #4338CA;
+  --color-superior-light: #818CF8;
+  --color-secondary: #06B6D4;
+  --color-background: var(--bg-main);
+  --color-card: var(--bg-card);
+  --color-text-main: var(--text-primary);
+  --color-text-muted: var(--text-secondary);
+  --color-bg-hover: var(--bg-hover);
+}
+
+:root {
+  --bg-main: #F9FAFB;
+  --bg-card: #FFFFFF;
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --border-color: #E2E8F0;
+  --bg-hover: #F1F5F9;
+}
+
+[data-theme='dark'] {
+  --bg-main: #0F172A;
+  --bg-card: #1E293B;
+  --text-primary: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --border-color: #334155;
+  --bg-hover: #334155;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-text-main antialiased transition-colors duration-300;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* Custom Scrollbar for Premium Feel */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #E2E8F0;
+    border-radius: 10px;
+  }
+  [data-theme='dark'] ::-webkit-scrollbar-thumb {
+    background: #334155;
+  }
+}
+
+@layer components {
+  .card-shadow {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  
+  .card-shadow-hover {
+    @apply transition-shadow duration-300;
+  }
+  
+  .card-shadow-hover:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+
+  .glass-panel {
+    @apply bg-card/80 backdrop-blur-xl border border-white/10 shadow-2xl;
+  }
+
+  .premium-input {
+    @apply w-full p-4 bg-gray-50 dark:bg-slate-800/50 border-none rounded-2xl text-sm focus:ring-2 focus:ring-superior/20 transition-all outline-none;
+  }
+
+  @keyframes blob {
+    0% { transform: translate(0px, 0px) scale(1); }
+    33% { transform: translate(30px, -50px) scale(1.1); }
+    66% { transform: translate(-20px, 20px) scale(0.9); }
+    100% { transform: translate(0px, 0px) scale(1); }
+  }
+
+  .animate-blob {
+    animation: blob 7s infinite;
+  }
+
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+}
