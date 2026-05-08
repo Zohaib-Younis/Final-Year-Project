@@ -7,8 +7,6 @@ const MONGO_URI = process.env.MONGO_URI;
 
 /**
  * Connects to MongoDB with retry logic.
- * On Railway, we want to avoid process.exit(1) to prevent crash loops,
- * but we also need to ensure we don't run DB operations while disconnected.
  */
 export const connectDB = async (retryCount = 5) => {
   try {
@@ -18,9 +16,9 @@ export const connectDB = async (retryCount = 5) => {
 
     console.log("⏳ Connecting to MongoDB...");
     
+    // Removed family: 4 to allow both IPv4 and IPv6
     const conn = await mongoose.connect(MONGO_URI, {
-      family: 4, // Force IPv4
-      serverSelectionTimeoutMS: 5000, // Timeout after 5 seconds instead of 30
+      serverSelectionTimeoutMS: 10000, // Wait up to 10 seconds for selection
     });
 
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
@@ -34,8 +32,6 @@ export const connectDB = async (retryCount = 5) => {
       return connectDB(retryCount - 1);
     } else {
       console.error("🚫 Maximum connection retries reached.");
-      // We don't exit here to avoid Railway crash loops, 
-      // but we return false so the caller knows it failed.
       return false;
     }
   }
