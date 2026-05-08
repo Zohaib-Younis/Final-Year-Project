@@ -17,10 +17,20 @@ import candidateRoutes from "./backend/routes/candidateRoutes.js";
 dotenv.config();
 
 const PORT = process.env.PORT || 3000;
+const isProduction = process.env.NODE_ENV === "production";
 
 async function startServer() {
-  await connectDB();
-  await seedAdmin();
+  console.log(`\n🚀 Starting server in ${isProduction ? "PRODUCTION" : "DEVELOPMENT"} mode...`);
+  
+  // Wait for DB connection before proceeding to seed or serve
+  const isConnected = await connectDB();
+  
+  if (isConnected) {
+    await seedAdmin();
+  } else {
+    console.warn("\n⚠️  WARNING: Server started without a database connection.");
+    console.warn("⚠️  Database-dependent features will fail until connection is established.\n");
+  }
 
   const app = express();
   const httpServer = createServer(app);
@@ -49,13 +59,15 @@ async function startServer() {
   app.use("/api/candidates", candidateRoutes);
 
   // --- Vite Middleware ---
-  if (process.env.NODE_ENV !== "production") {
+  if (!isProduction) {
+    console.log("🛠️  Starting Vite development server...");
     const vite = await createViteServer({
       server: { middlewareMode: true, hmr: { port: 0 } },
       appType: "spa",
     });
     app.use(vite.middlewares);
   } else {
+    console.log("📦 Serving production build from dist folder...");
     const distPath = path.join(process.cwd(), "dist");
     app.use(express.static(distPath));
     app.get("*", (req, res) => {
@@ -66,8 +78,11 @@ async function startServer() {
   httpServer.on("error", (err: NodeJS.ErrnoException) => {
     if (err.code === "EADDRINUSE") {
       console.error(`\n❌ Port ${PORT} is already in use!`);
-      console.error(`   Run this command to free it: taskkill /F /IM node.exe`);
-      console.error(`   Then run 'npm run dev' again.\n`);
+      if (process.platform === "win32") {
+        console.error(`   Run this command to free it: taskkill /F /IM node.exe`);
+      } else {
+        console.error(`   Run this command to free it: fuser -k ${PORT}/tcp`);
+      }
       process.exit(1);
     } else {
       throw err;
@@ -75,7 +90,7 @@ async function startServer() {
   });
 
   httpServer.listen(Number(PORT), "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`✅ Server running on http://localhost:${PORT}`);
   });
 }
 
