@@ -35,14 +35,9 @@ async function startServer() {
 
   const app = express();
   
-  // --- CORS Configuration ---
-  // Allow requests from your Vercel frontend and local development
+  // --- Permissive CORS for Debugging ---
   app.use(cors({
-    origin: [
-      "https://final-year-project-neon-iota.vercel.app",
-      "http://localhost:5173", // Standard Vite dev port
-      "http://localhost:3000"
-    ],
+    origin: true, // This allows ANY origin that makes a request
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
@@ -51,16 +46,13 @@ async function startServer() {
   const httpServer = createServer(app);
   const io = new Server(httpServer, {
     cors: {
-      origin: "*", // Socket.io CORS is separate
+      origin: "*",
     },
   });
 
-  // Make io accessible in routes/controllers
   app.set("io", io);
-
   app.use(express.json({ limit: "10mb" }));
 
-  // --- Socket.io ---
   io.on("connection", (socket) => {
     console.log("Client connected:", socket.id);
     socket.on("disconnect", () => console.log("Client disconnected"));
@@ -75,14 +67,12 @@ async function startServer() {
 
   // --- Vite Middleware ---
   if (!isProduction) {
-    console.log("🛠️  Starting Vite development server...");
     const vite = await createViteServer({
       server: { middlewareMode: true, hmr: { port: 0 } },
       appType: "spa",
     });
     app.use(vite.middlewares);
   } else {
-    console.log("📦 Serving production build from dist folder...");
     const distPath = path.join(process.cwd(), "dist");
     app.use(express.static(distPath));
     app.get("*", (req, res) => {
@@ -93,11 +83,6 @@ async function startServer() {
   httpServer.on("error", (err: NodeJS.ErrnoException) => {
     if (err.code === "EADDRINUSE") {
       console.error(`\n❌ Port ${PORT} is already in use!`);
-      if (process.platform === "win32") {
-        console.error(`   Run this command to free it: taskkill /F /IM node.exe`);
-      } else {
-        console.error(`   Run this command to free it: fuser -k ${PORT}/tcp`);
-      }
       process.exit(1);
     } else {
       throw err;
