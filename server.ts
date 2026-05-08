@@ -4,6 +4,7 @@ import { Server } from "socket.io";
 import { createServer as createViteServer } from "vite";
 import path from "path";
 import dotenv from "dotenv";
+import cors from "cors";
 import { connectDB } from "./backend/config/db.js";
 import { seedAdmin } from "./backend/config/seedAdmin.js";
 
@@ -33,10 +34,24 @@ async function startServer() {
   }
 
   const app = express();
+  
+  // --- CORS Configuration ---
+  // Allow requests from your Vercel frontend and local development
+  app.use(cors({
+    origin: [
+      "https://final-year-project-neon-iota.vercel.app",
+      "http://localhost:5173", // Standard Vite dev port
+      "http://localhost:3000"
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+  }));
+
   const httpServer = createServer(app);
   const io = new Server(httpServer, {
     cors: {
-      origin: "*",
+      origin: "*", // Socket.io CORS is separate
     },
   });
 
