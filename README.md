@@ -1,4 +1,4 @@
-# Superior Voting System
+# Secure Student Voting System
 
 A professional university voting system built specifically for **Superior University**.
 

@@ -111,18 +111,18 @@ function CandidateRequestsContent() {
         doc.setTextColor(255, 255, 255);
         doc.setFontSize(24);
         doc.setFont("helvetica", "bold");
-        doc.text(settings.appName || "Superior Voting System", 40, 25);
+        doc.text(settings.appName || "Secure Student Voting System", 40, 25);
       } catch (e) {
         doc.setTextColor(255, 255, 255);
         doc.setFontSize(24);
         doc.setFont("helvetica", "bold");
-        doc.text(settings.appName || "Superior Voting System", 14, 25);
+        doc.text(settings.appName || "Secure Student Voting System", 14, 25);
       }
     } else {
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(24);
       doc.setFont("helvetica", "bold");
-      doc.text(settings.appName || "Superior Voting System", 14, 25);
+      doc.text(settings.appName || "Secure Student Voting System", 14, 25);
     }
 
     doc.setFontSize(10);

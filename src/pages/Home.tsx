@@ -215,7 +215,7 @@ export default function Home() {
             <a href="#" className="hover:text-superior transition-colors">Contact Support</a>
           </div>
           <p className="text-xs text-text-secondary font-medium">
-            &copy; {new Date().getFullYear()} Superior Voting System. All rights reserved.
+            &copy; {new Date().getFullYear()} Secure Student Voting System. All rights reserved.
           </p>
         </div>
       </footer>

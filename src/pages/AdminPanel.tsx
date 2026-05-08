@@ -163,7 +163,7 @@ function Overview() {
     // Header
     doc.setFontSize(22);
     doc.setTextColor(123, 92, 126); // Superior Purple
-    doc.text('Superior Voting System', 105, 20, { align: 'center' });
+    doc.text('Secure Student Voting System', 105, 20, { align: 'center' });
     doc.setFontSize(16);
     doc.setTextColor(0, 0, 0);
     doc.text('System Analytics Report', 105, 30, { align: 'center' });
